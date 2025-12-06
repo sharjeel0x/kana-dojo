@@ -30,7 +30,7 @@ export const useSmartReverseMode = (options: SmartReverseModeOptions = {}) => {
   const {
     baseProbability = 0.2,
     incrementPerCorrect = 0.1,
-    maxProbability = 0.7,
+    maxProbability = 0.6,
     forceSwitchInterval = 3
   } = options;
 
