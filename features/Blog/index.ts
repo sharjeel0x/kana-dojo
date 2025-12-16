@@ -56,6 +56,7 @@ export {
 // Components
 export { BlogCard } from './components/BlogCard';
 export { BlogList, filterPostsByCategory } from './components/BlogList';
+export { BlogPost } from './components/BlogPost';
 export { CategoryFilter } from './components/CategoryFilter';
 export { TableOfContents } from './components/TableOfContents';
 export { RelatedPosts } from './components/RelatedPosts';
