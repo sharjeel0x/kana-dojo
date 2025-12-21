@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Timer, Target, X } from 'lucide-react';
 import clsx from 'clsx';
+import { ActionButton } from '@/shared/components/ui/ActionButton';
 import GoalTimersPanel from '@/shared/components/Timer/GoalTimersPanel';
 import { buttonBorderStyles } from '@/shared/lib/styles';
 import type { BlitzGameMode, GoalTimer, AddGoalFn } from './types';
@@ -130,8 +131,8 @@ export default function ActiveGame<T>({
   }, [gameMode, shuffledOptions.length]);
 
   return (
-    <div className='min-h-[100dvh] flex flex-col lg:flex-row items-start justify-center p-4 gap-6'>
-      <div className='max-w-md w-full lg:max-w-lg space-y-6'>
+    <div className='flex min-h-[100dvh] flex-col items-start justify-center gap-6 p-4 lg:flex-row'>
+      <div className='w-full max-w-md space-y-6 lg:max-w-lg'>
         {/* Header with timer, stats, and cancel button */}
         <GameHeader
           minutes={minutes}
@@ -142,9 +143,9 @@ export default function ActiveGame<T>({
         />
 
         {/* Progress bar */}
-        <div className='w-full bg-[var(--border-color)] rounded-full h-2'>
+        <div className='h-2 w-full rounded-full bg-[var(--border-color)]'>
           <div
-            className='bg-[var(--main-color)] h-2 rounded-full transition-all duration-1000'
+            className='h-2 rounded-full bg-[var(--main-color)] transition-all duration-1000'
             style={{
               width: `${
                 ((challengeDuration - timeLeft) / challengeDuration) * 100
@@ -223,14 +224,14 @@ function GameHeader({
   onCancel: () => void;
 }) {
   return (
-    <div className='flex justify-between items-center'>
+    <div className='flex items-center justify-between'>
       <div className='flex items-center gap-2'>
         <Timer className='text-[var(--main-color)]' size={20} />
         <span
           className={clsx(
             'text-lg font-bold',
             timeLeft <= 10
-              ? 'text-red-500 animate-pulse'
+              ? 'animate-pulse text-red-500'
               : 'text-[var(--secondary-color)]'
           )}
         >
@@ -239,18 +240,26 @@ function GameHeader({
       </div>
       <div className='flex items-center gap-4'>
         <div className='text-right text-sm text-[var(--muted-color)]'>
-          <div>Score: {stats.correct}</div>
-          <div>Streak: {stats.streak}</div>
+          <div>
+            <span className='text-[var(--secondary-color)]'>Score: </span>
+            <span className='text-[var(--main-color)]'>{stats.correct}</span>
+          </div>
+          <div>
+            <span className='text-[var(--secondary-color)]'>Streak: </span>
+            <span className='text-[var(--main-color)]'>{stats.streak}</span>
+          </div>
         </div>
-        <button
+        <ActionButton
           onClick={onCancel}
-          className={clsx(
-            'p-2 rounded-lg border-2 border-red-500/50 hover:bg-red-500/10 transition-colors cursor-pointer'
-          )}
+          colorScheme='secondary'
+          borderColorScheme='secondary'
+          borderRadius='xl'
+          borderBottomThickness={6}
+          className='w-auto px-3 py-2'
           title='Cancel challenge'
         >
-          <X size={20} className='text-red-500 ' />
-        </button>
+          <X size={20} />
+        </ActionButton>
       </div>
     </div>
   );
@@ -272,14 +281,14 @@ function QuestionDisplay<T>({
   getCorrectAnswer: (question: T, isReverse?: boolean) => string;
 }) {
   return (
-    <div className='text-center space-y-4'>
+    <div className='space-y-4 text-center'>
       <div className='flex flex-col items-center gap-4'>
         <div
           className={clsx(
             'transition-all duration-200',
             isReverseActive
-              ? 'text-4xl md:text-5xl font-medium'
-              : 'text-6xl md:text-7xl font-semibold',
+              ? 'text-4xl font-medium md:text-5xl'
+              : 'text-6xl font-semibold md:text-7xl',
             lastAnswerCorrect === true && 'text-green-500',
             lastAnswerCorrect === false && 'text-red-500',
             lastAnswerCorrect === null && 'text-[var(--main-color)]'
@@ -290,7 +299,7 @@ function QuestionDisplay<T>({
       </div>
 
       {/* Feedback - fixed height to prevent layout shift */}
-      <div className='h-6 flex items-center justify-center'>
+      <div className='flex h-6 items-center justify-center'>
         {lastAnswerCorrect !== null && currentQuestion && (
           <div
             className={clsx(
@@ -334,7 +343,7 @@ function TypeModeInput({
         value={userAnswer}
         onChange={e => setUserAnswer(e.target.value)}
         onKeyPress={e => e.key === 'Enter' && onSubmit()}
-        className='w-full p-4 text-lg text-center border-2 border-[var(--border-color)] rounded-lg bg-[var(--card-color)] text-[var(--secondary-color)] focus:border-[var(--main-color)] focus:outline-none'
+        className='w-full rounded-lg border-2 border-[var(--border-color)] bg-[var(--card-color)] p-4 text-center text-lg text-[var(--secondary-color)] focus:border-[var(--main-color)] focus:outline-none'
         placeholder={inputPlaceholder}
         autoComplete='off'
         autoFocus
@@ -343,12 +352,12 @@ function TypeModeInput({
         type='submit'
         disabled={!userAnswer.trim()}
         className={clsx(
-          'w-full h-12 px-6 flex flex-row justify-center items-center gap-2',
+          'flex h-12 w-full flex-row items-center justify-center gap-2 px-6',
           'rounded-2xl transition-colors duration-200',
-          'font-medium border-b-6 shadow-sm',
+          'border-b-6 font-medium shadow-sm',
           userAnswer.trim()
-            ? 'bg-[var(--main-color)] text-[var(--background-color)] border-[var(--main-color-accent)] hover:cursor-pointer'
-            : 'bg-[var(--card-color)] text-[var(--border-color)] border-[var(--border-color)] cursor-not-allowed'
+            ? 'border-[var(--main-color-accent)] bg-[var(--main-color)] text-[var(--background-color)] hover:cursor-pointer'
+            : 'cursor-not-allowed border-[var(--border-color)] bg-[var(--card-color)] text-[var(--border-color)]'
         )}
       >
         Submit
@@ -379,7 +388,7 @@ function PickModeOptions<T>({
   isReverseActive: boolean;
 }) {
   return (
-    <div className='flex flex-col w-full gap-4'>
+    <div className='flex w-full flex-col gap-4'>
       {shuffledOptions.map((option, i) => {
         const isWrong = wrongSelectedAnswers.includes(option);
         return (
@@ -391,18 +400,18 @@ function PickModeOptions<T>({
             type='button'
             disabled={isWrong}
             className={clsx(
-              'py-5 rounded-xl w-full flex flex-row items-center gap-1.5',
+              'flex w-full flex-row items-center gap-1.5 rounded-xl py-5',
               isReverseActive
                 ? 'justify-center text-5xl'
-                : 'pl-8 justify-start text-2xl md:text-3xl',
+                : 'justify-start pl-8 text-2xl md:text-3xl',
               buttonBorderStyles,
-              'active:scale-95 md:active:scale-98 active:duration-200',
+              'active:scale-95 active:duration-200 md:active:scale-98',
               'text-[var(--border-color)]',
               'border-b-4',
               isWrong &&
-                'hover:bg-[var(--card-color)] border-[var(--border-color)]',
+                'border-[var(--border-color)] hover:bg-[var(--card-color)]',
               !isWrong &&
-                'text-[var(--secondary-color)] border-[var(--secondary-color)]/50 hover:border-[var(--secondary-color)]'
+                'border-[var(--secondary-color)]/50 text-[var(--secondary-color)] hover:border-[var(--secondary-color)]'
             )}
             onClick={() => onOptionClick(option)}
             lang={isReverseActive ? 'ja' : undefined}
@@ -414,7 +423,7 @@ function PickModeOptions<T>({
             </span>
             <span
               className={clsx(
-                'hidden lg:inline text-xs rounded-full bg-[var(--border-color)] px-1',
+                'hidden rounded-full bg-[var(--border-color)] px-1 text-xs lg:inline',
                 isReverseActive ? '' : 'mr-4',
                 isWrong
                   ? 'text-[var(--border-color)]'
@@ -441,16 +450,16 @@ function RealTimeStats({
 }) {
   return (
     <div className='grid grid-cols-3 gap-2 text-center text-sm'>
-      <div className='bg-[var(--card-color)] rounded p-2'>
-        <div className='text-green-500 font-bold'>{correct}</div>
+      <div className='rounded bg-[var(--card-color)] p-2'>
+        <div className='font-bold text-green-500'>{correct}</div>
         <div className='text-[var(--muted-color)]'>Correct</div>
       </div>
-      <div className='bg-[var(--card-color)] rounded p-2'>
-        <div className='text-red-500 font-bold'>{wrong}</div>
+      <div className='rounded bg-[var(--card-color)] p-2'>
+        <div className='font-bold text-red-500'>{wrong}</div>
         <div className='text-[var(--muted-color)]'>Wrong</div>
       </div>
-      <div className='bg-[var(--card-color)] rounded p-2'>
-        <div className='text-[var(--main-color)] font-bold'>{accuracy}%</div>
+      <div className='rounded bg-[var(--card-color)] p-2'>
+        <div className='font-bold text-[var(--main-color)]'>{accuracy}%</div>
         <div className='text-[var(--muted-color)]'>Accuracy</div>
       </div>
     </div>
@@ -473,7 +482,7 @@ function GoalTimersSidebar({
   };
 }) {
   return (
-    <div className='w-full lg:w-80 space-y-4'>
+    <div className='w-full space-y-4 lg:w-80'>
       <GoalTimersPanel
         goals={goals}
         currentSeconds={elapsedTime}
@@ -485,26 +494,26 @@ function GoalTimersSidebar({
       {goalTimers.nextGoal && (
         <div
           className={clsx(
-            ' border-2 rounded-xl p-4',
+            'rounded-xl border-2 p-4',
             'border-[var(--main-color)] bg-[var(--main-color)]/5'
           )}
         >
-          <div className='flex items-center gap-2 mb-2'>
+          <div className='mb-2 flex items-center gap-2'>
             <Target size={16} className='text-[var(--main-color)]' />
-            <p className='text-sm text-[var(--secondary-color)] font-medium'>
+            <p className='text-sm font-medium text-[var(--secondary-color)]'>
               Next Goal
             </p>
           </div>
-          <p className='font-bold text-[var(--main-color)] mb-2'>
+          <p className='mb-2 font-bold text-[var(--main-color)]'>
             {goalTimers.nextGoal.label}
           </p>
-          <div className='w-full bg-[var(--border-color)] rounded-full h-2 '>
+          <div className='h-2 w-full rounded-full bg-[var(--border-color)]'>
             <div
-              className='bg-[var(--main-color)] h-2 rounded-full transition-all'
+              className='h-2 rounded-full bg-[var(--main-color)] transition-all'
               style={{ width: `${goalTimers.progressToNextGoal}%` }}
             />
           </div>
-          <p className='text-xs text-[var(--secondary-color)] mt-1 text-center'>
+          <p className='mt-1 text-center text-xs text-[var(--secondary-color)]'>
             {Math.floor(goalTimers.nextGoal.targetSeconds / 60)}:
             {(goalTimers.nextGoal.targetSeconds % 60)
               .toString()

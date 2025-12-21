@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useRouter } from '@/core/i18n/routing';
 import { Random } from 'random-js';
 import { useClick, useCorrect, useError } from '@/shared/hooks/useAudio';
-import { useSmartReverseMode } from '@/shared/hooks/useSmartReverseMode';
 import { saveSession } from '@/shared/lib/gauntletStats';
 
 import EmptyState from './EmptyState';
@@ -98,16 +97,8 @@ export default function Gauntlet<T>({ config }: GauntletProps<T>) {
     generateOptions,
     renderOption,
     getCorrectOption,
-    supportsReverseMode,
     initialGameMode
   } = config;
-
-  // Smart reverse mode
-  const {
-    isReverse,
-    decideNextMode,
-    recordWrongAnswer: resetReverseStreak
-  } = useSmartReverseMode();
 
   // Game configuration state
   const [gameMode, setGameMode] = useState<GauntletGameMode>(
@@ -167,7 +158,8 @@ export default function Gauntlet<T>({ config }: GauntletProps<T>) {
   const [isNewBest, setIsNewBest] = useState(false);
 
   const pickModeSupported = !!(generateOptions && getCorrectOption);
-  const isReverseActive = supportsReverseMode && isReverse;
+  // Gauntlet mode always uses normal mode (never reverse)
+  const isReverseActive = false;
 
   const totalQuestions = items.length * repetitions;
   const currentQuestion = questionQueue[currentIndex] || null;
@@ -378,11 +370,6 @@ export default function Gauntlet<T>({ config }: GauntletProps<T>) {
       }
     }
 
-    // Smart reverse mode
-    if (supportsReverseMode) {
-      decideNextMode();
-    }
-
     // Clear feedback and move to next
     setTimeout(() => {
       setLastAnswerCorrect(null);
@@ -405,8 +392,6 @@ export default function Gauntlet<T>({ config }: GauntletProps<T>) {
     maxLives,
     correctSinceLastRegen,
     regenThreshold,
-    supportsReverseMode,
-    decideNextMode,
     currentIndex,
     totalQuestions,
     endGame,
@@ -434,11 +419,6 @@ export default function Gauntlet<T>({ config }: GauntletProps<T>) {
       }));
     }
 
-    // Smart reverse mode
-    if (supportsReverseMode) {
-      resetReverseStreak();
-    }
-
     // Lose a life
     const newLives = lives - 1;
     setLives(newLives);
@@ -457,8 +437,6 @@ export default function Gauntlet<T>({ config }: GauntletProps<T>) {
     playError,
     currentQuestion,
     getItemId,
-    supportsReverseMode,
-    resetReverseStreak,
     lives,
     endGame
   ]);

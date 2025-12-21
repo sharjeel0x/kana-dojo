@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useChallengeTimer } from '@/shared/hooks/useTimer';
 import { useGoalTimers } from '@/shared/hooks/useGoalTimers';
-import { useSmartReverseMode } from '@/shared/hooks/useSmartReverseMode';
 import { useClick, useCorrect, useError } from '@/shared/hooks/useAudio';
 import confetti from 'canvas-confetti';
 import { useRouter } from '@/core/i18n/routing';
@@ -47,16 +46,8 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
     generateOptions,
     renderOption,
     getCorrectOption,
-    supportsReverseMode,
     stats
   } = config;
-
-  // Smart reverse mode
-  const {
-    isReverse,
-    decideNextMode,
-    recordWrongAnswer: resetReverseStreak
-  } = useSmartReverseMode();
 
   // Game mode state - use initialGameMode if provided (from store), otherwise use localStorage
   const [gameMode, setGameMode] = useState<BlitzGameMode>(() => {
@@ -183,7 +174,8 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
     stats
   ]);
 
-  const isReverseActive = supportsReverseMode && isReverse;
+  // Blitz mode always uses normal mode (never reverse)
+  const isReverseActive = false;
 
   // Generate shuffled options when question changes (Pick mode)
   useEffect(() => {
@@ -268,9 +260,6 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
       playCorrect();
       stats.incrementCorrect();
       setLastAnswerCorrect(true);
-      if (supportsReverseMode) {
-        decideNextMode();
-      }
       setTimeout(() => {
         setCurrentQuestion(generateQuestionRef.current(items));
         setLastAnswerCorrect(null);
@@ -278,9 +267,6 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
     } else {
       playError();
       stats.incrementWrong();
-      if (supportsReverseMode) {
-        resetReverseStreak();
-      }
       setLastAnswerCorrect(false);
       setTimeout(() => setLastAnswerCorrect(null), 800);
     }
@@ -298,9 +284,6 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
       stats.incrementCorrect();
       setLastAnswerCorrect(true);
       setWrongSelectedAnswers([]);
-      if (supportsReverseMode) {
-        decideNextMode();
-      }
       setTimeout(() => {
         setCurrentQuestion(generateQuestionRef.current(items));
         setLastAnswerCorrect(null);
@@ -310,9 +293,6 @@ export default function Blitz<T>({ config }: BlitzProps<T>) {
       stats.incrementWrong();
       setWrongSelectedAnswers(prev => [...prev, selectedOption]);
       setLastAnswerCorrect(false);
-      if (supportsReverseMode) {
-        resetReverseStreak();
-      }
     }
   };
 
