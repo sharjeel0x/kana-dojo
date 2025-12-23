@@ -13,12 +13,6 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useClick } from '@/shared/hooks/useAudio';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Experiments - Explore Alternative Learning Methods',
-  description: 'Explore experimental features and alternative learning methods for Japanese.'
-};
 
 const experiments = [
   {
@@ -92,21 +86,21 @@ export default function ExperimentsPage() {
   return (
     <div className='flex flex-col gap-4 pt-4 md:pt-8'>
       <div className='mb-4'>
-        <h1 className='text-2xl md:text-3xl text-[var(--main-color)]'>
+        <h1 className='text-2xl text-[var(--main-color)] md:text-3xl'>
           Experiments
         </h1>
-        <p className='text-[var(--secondary-color)] mt-1'>
+        <p className='mt-1 text-[var(--secondary-color)]'>
           Relaxation and experimental features
         </p>
       </div>
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         {experiments.map(exp => (
           <Link
             key={exp.name}
             href={exp.href}
             onClick={() => playClick()}
             className={clsx(
-              'p-6 rounded-xl bg-[var(--card-color)] border border-[var(--border-color)] hover:border-[var(--main-color)] transition-all duration-250 flex flex-col gap-3'
+              'flex flex-col gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-6 transition-all duration-250 hover:border-[var(--main-color)]'
             )}
           >
             <exp.icon size={32} className={exp.color} />
