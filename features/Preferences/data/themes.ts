@@ -1100,6 +1100,10 @@ const baseThemeSets: BaseThemeGroup[] = [
         secondaryColor: 'oklch(68.0% 0.205 30.0 / 1)',
       },
       {
+        id: 'umbrella-rain',
+        backgroundColor: 'oklch(22.0% 0.018 250.0 / 1)',
+        mainColor: 'oklch(70.0% 0.175 225.0 / 1)',
+        secondaryColor: 'oklch(75.0% 0.145 350.0 / 1)'},{
         id: 'tanuki-mischief',
         backgroundColor: 'oklch(22.0% 0.042 55.0 / 1)',
         mainColor: 'oklch(68.0% 0.125 65.0 / 1)',
