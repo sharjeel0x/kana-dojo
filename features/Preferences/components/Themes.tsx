@@ -302,6 +302,8 @@ const Themes = () => {
                   <span
                     className={clsx(
                       'flex items-center gap-1.5 text-center text-lg',
+                      currentTheme.id === 'big-beautiful-theme' &&
+                        'text-3xl font-semibold',
                       isPremiumThemeId(currentTheme.id) && 'invisible',
                     )}
                   >

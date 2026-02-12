@@ -125,7 +125,7 @@ const ThemeCard = memo(function ThemeCard({
           </span>
         ) : (
           <span
-            className='text-sm capitalize'
+            className={`capitalize ${isBigBeautifulTheme ? 'text-xl font-semibold' : 'text-sm'}`}
             style={{ color: theme.mainColor }}
           >
             {/* {isSelected && '\u2B24 '} */}
